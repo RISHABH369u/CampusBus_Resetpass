@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>CampusBus — Reset password</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --brand:#00A8B6;
+    --dark:#183965;
+    --bg:#f4fbfc;
+    --card:#ffffff;
+    --muted:#687a7d;
+    --success:#17a34a;
+    --danger:#d9534f;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; background:linear-gradient(180deg,#e9fbfc, #f7fcfe); color:#0e2a30; -webkit-font-smoothing:antialiased}
+  .wrap{max-width:820px;margin:40px auto;padding:24px}
+  .card{background:var(--card);border-radius:12px;box-shadow:0 10px 30px rgba(14,42,48,0.06);overflow:hidden}
+  .hero{display:flex;align-items:center;gap:16px;padding:28px;background:linear-gradient(90deg,var(--brand), #07a3b0);color:#fff}
+  .hero h1{margin:0;font-size:20px}
+  .body{padding:26px}
+  .lead{color:var(--muted);margin:0 0 16px}
+  .center{display:flex;justify-content:center;align-items:center}
+  .big{font-size:18px;font-weight:600}
+  .muted{color:var(--muted)}
+  .btn{display:inline-block;padding:12px 16px;border-radius:10px;text-decoration:none;font-weight:600;cursor:pointer}
+  .btn-brand{background:var(--brand);color:#fff;border:none}
+  .btn-dark{background:var(--dark);color:#fff;border:none}
+  .btn-ghost{background:transparent;border:1px solid #e6f0f0;color:var(--dark)}
+  .info{padding:18px;border-radius:10px;background:#f7fbfb;border:1px solid #eaf6f6;margin-bottom:16px}
+  .error{padding:18px;border-radius:10px;background:#fff3f3;border:1px solid #ffd6d6;color:var(--danger);margin-bottom:16px}
+  .success{padding:18px;border-radius:10px;background:#f3fff4;border:1px solid #d9f6de;color:var(--success);margin-bottom:16px}
+  label{display:block;margin:10px 0 6px;color:var(--muted)}
+  input[type="password"]{width:100%;padding:12px;border-radius:8px;border:1px solid #e6eef0;font-size:15px}
+  .footer{padding:14px;text-align:center;color:#93a6a9;font-size:13px}
+  .small{font-size:13px;color:var(--muted)}
+  .row{display:flex;gap:12px;align-items:center}
+  @media (max-width:600px){.wrap{margin:18px 12px}}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="hero">
+        <div style="width:56px;height:56px;border-radius:10px;background:rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;font-weight:700;">
+          CB
+        </div>
+        <div>
+          <h1>CampusBus — Password reset</h1>
+          <div class="small">Securely reset your password</div>
+        </div>
+      </div>
+
+      <div class="body">
+        <p class="lead">This page completes the password reset flow. If you followed a reset link in your email, we’ll detect the secure token and let you set a new password here.</p>
+
+        <!-- ALERTS -->
+        <div id="alertError" class="error" style="display:none"></div>
+        <div id="alertInfo" class="info" style="display:none"></div>
+        <div id="alertSuccess" class="success" style="display:none"></div>
+
+        <!-- password form (hidden until token present) -->
+        <div id="pwForm" style="display:none">
+          <div class="big">Set your new password</div>
+          <p class="small">Choose a strong password (min 6 characters). This will immediately update your account.</p>
+
+          <label for="pw">New password</label>
+          <input id="pw" type="password" placeholder="New password" autocomplete="new-password">
+
+          <label for="pw2">Confirm password</label>
+          <input id="pw2" type="password" placeholder="Confirm password" autocomplete="new-password">
+
+          <div style="height:12px"></div>
+          <div class="row">
+            <button id="btnReset" class="btn btn-brand">Set password</button>
+            <button id="btnCancel" class="btn btn-ghost">Back to login</button>
+          </div>
+
+          <div id="pwNote" class="small" style="margin-top:12px;color:var(--muted)"></div>
+        </div>
+
+        <!-- fallback when no token: show helpful instructions -->
+        <div id="noToken" style="display:none">
+          <div class="big">No valid reset token found</div>
+          <p class="small">If you clicked an expired link, request a new password reset in the app or via the password recovery page.</p>
+          <div style="height:12px"></div>
+          <div class="row">
+            <a id="openApp" class="btn btn-dark">Open App / Login</a>
+            <a id="openForgot" class="btn btn-ghost">Request new reset</a>
+          </div>
+        </div>
+
+      </div>
+      <div class="footer">© <span id="year"></span> CampusBus — Keep travel predictable, reliable and stress-free.</div>
+    </div>
+  </div>
+
+<script>
+/*
+  Reset page logic:
+  - If the URL fragment (location.hash) or query (location.search) contains access_token,
+    we show the password form and PATCH /auth/v1/user with Authorization: Bearer <access_token>.
+  - If the fragment contains error (e.g. otp_expired) we show a friendly error.
+  - Replace SUPABASE_URL and SUPABASE_ANON_KEY with your own if desired (these are public anon keys).
+*/
+
+const SUPABASE_URL = "https://zholdpdpceyaltagfnlr.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpob2xkcGRwY2V5YWx0YWdmbmxyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMxODcwNjIsImV4cCI6MjA2ODc2MzA2Mn0.TlCz8_KqKn0MA_tTekfswPFz8NPB30YhFgTw7kdnCDA";
+
+document.getElementById('year').textContent = new Date().getFullYear();
+
+function parseFragment(str) {
+  if (!str) return {};
+  // remove leading # or ?
+  str = str.replace(/^#|^\?/, '');
+  const parts = str.split('&');
+  const obj = {};
+  parts.forEach(p => {
+    const [k, v] = p.split('=');
+    if (!k) return;
+    obj[decodeURIComponent(k)] = v ? decodeURIComponent(v) : '';
+  });
+  return obj;
+}
+
+// read both search and hash
+const frag = parseFragment(window.location.hash);
+const qs = parseFragment(window.location.search);
+
+const params = Object.assign({}, qs, frag);
+
+// Helper UI refs
+const alertError = document.getElementById('alertError');
+const alertInfo = document.getElementById('alertInfo');
+const alertSuccess = document.getElementById('alertSuccess');
+const pwForm = document.getElementById('pwForm');
+const noToken = document.getElementById('noToken');
+const btnReset = document.getElementById('btnReset');
+const btnCancel = document.getElementById('btnCancel');
+const openApp = document.getElementById('openApp');
+const openForgot = document.getElementById('openForgot');
+const pwNote = document.getElementById('pwNote');
+
+openApp.addEventListener('click', () => {
+  // Try to deep link into mobile app first
+  const deep = "myapp://auth/callback";
+  window.location.href = deep;
+  // fallback to open login page on web (if you host one)
+  setTimeout(()=>{ window.location.href = "/"; }, 800);
+});
+openForgot.addEventListener('click', () => {
+  // open the hosted forgot password page or login page
+  window.location.href = "/"; // change if you host a specific route
+});
+btnCancel.addEventListener('click', () => {
+  window.location.href = "/"; // go back to your login page
+});
+
+// Utilities
+function showError(msg) {
+  alertError.style.display = 'block';
+  alertError.textContent = msg;
+}
+function showInfo(msg) {
+  alertInfo.style.display = 'block';
+  alertInfo.textContent = msg;
+}
+function showSuccess(msg) {
+  alertSuccess.style.display = 'block';
+  alertSuccess.textContent = msg;
+}
+
+// If Supabase returned an error in the fragment (like otp_expired)
+if (params.error || params.error_description || params.error_code) {
+  const code = params.error_code || params.error || '';
+  const desc = params.error_description || '';
+  showError('Reset link issue: ' + code + (desc ? ' — ' + desc : ''));
+  noToken.style.display = 'block';
+} else if (params.access_token) {
+  // Good: we have an access token. Show password form.
+  pwForm.style.display = 'block';
+  showInfo('Secure session detected. Enter a new password to update your account.');
+
+  btnReset.addEventListener('click', async () => {
+    const pw = document.getElementById('pw').value.trim();
+    const pw2 = document.getElementById('pw2').value.trim();
+    alertError.style.display = 'none';
+    alertSuccess.style.display = 'none';
+    if (!pw || pw.length < 6) { showError('Password must be at least 6 characters'); return; }
+    if (pw !== pw2) { showError('Passwords do not match'); return; }
+
+    btnReset.disabled = true;
+    btnReset.textContent = 'Updating...';
+    pwNote.textContent = 'Updating password securely — please wait.';
+
+    try {
+      const resp = await fetch(SUPABASE_URL + '/auth/v1/user', {
+        method: 'PUT', // Supabase accepts PUT/PATCH for user update
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + params.access_token,
+          'apikey': SUPABASE_ANON_KEY
+        },
+        body: JSON.stringify({ password: pw })
+      });
+
+      const text = await resp.text();
+      if (resp.ok) {
+        showSuccess('Password updated successfully. You can now sign in with your new password.');
+        pwNote.textContent = '';
+        // optionally, clear fragment to avoid reuse
+        history.replaceState({}, document.title, window.location.pathname);
+      } else {
+        let message = 'Failed to update password.';
+        try {
+          const j = JSON.parse(text);
+          message = j.error || j.message || message;
+        } catch(e){
+          if (text) message = text;
+        }
+        showError(message);
+        pwNote.textContent = '';
+      }
+    } catch (err) {
+      showError('Network error: ' + err.message);
+      pwNote.textContent = '';
+    } finally {
+      btnReset.disabled = false;
+      btnReset.textContent = 'Set password';
+    }
+  });
+
+} else {
+  // No token and no error — likely user opened page directly.
+  noToken.style.display = 'block';
+  showInfo('If you were sent here from an email, the link might have expired. Request a new reset link from the app.');
+}
+</script>
+</body>
+</html>
