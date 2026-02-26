@@ -3,271 +3,570 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>CampusBus — Reset password</title>
+  <title>CampusBus — Reset Password</title>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    :root{
-      --brand:#00A8B6;
-      --dark:#183965;
-      --bg:#f4fbfc;
-      --card:#ffffff;
-      --muted:#687a7d;
-      --success:#17a34a;
-      --danger:#d9534f;
+    :root {
+      --brand: #00A8B6;
+      --dark: #183965;
+      --bg: #eaf8fa;
+      --card: #ffffff;
+      --muted: #5a7a7e;
+      --border: #d8eef0;
+      --success: #14a849;
+      --success-bg: #f0fff4;
+      --success-border: #b7f0cb;
+      --danger: #c0392b;
+      --danger-bg: #fff4f4;
+      --danger-border: #fdd;
+      --info-bg: #f0fafb;
+      --info-border: #c5edf0;
     }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; background:linear-gradient(180deg,#e9fbfc,#f7fcfe); color:#0e2a30; -webkit-font-smoothing:antialiased}
-    .wrap{max-width:820px;margin:40px auto;padding:24px}
-    .card{background:var(--card);border-radius:12px;box-shadow:0 10px 30px rgba(14,42,48,0.06);overflow:hidden}
-    .hero{display:flex;align-items:center;gap:16px;padding:28px;background:linear-gradient(90deg,var(--brand), #07a3b0);color:#fff}
-    .hero h1{margin:0;font-size:20px}
-    .body{padding:26px}
-    .lead{color:var(--muted);margin:0 0 16px}
-    .center{display:flex;justify-content:center;align-items:center}
-    .big{font-size:18px;font-weight:600}
-    .muted{color:var(--muted)}
-    .btn{display:inline-block;padding:12px 16px;border-radius:10px;text-decoration:none;font-weight:600;cursor:pointer;border:none}
-    .btn-brand{background:var(--brand);color:#fff}
-    .btn-dark{background:var(--dark);color:#fff}
-    .btn-ghost{background:transparent;border:1px solid #e6f0f0;color:var(--dark)}
-    .info{padding:18px;border-radius:10px;background:#f7fbfb;border:1px solid #eaf6f6;margin-bottom:16px}
-    .error{padding:18px;border-radius:10px;background:#fff3f3;border:1px solid #ffd6d6;color:var(--danger);margin-bottom:16px}
-    .success{padding:18px;border-radius:10px;background:#f3fff4;border:1px solid #d9f6de;color:var(--success);margin-bottom:16px}
-    label{display:block;margin:10px 0 6px;color:var(--muted)}
-    input[type="password"]{width:100%;padding:12px;border-radius:8px;border:1px solid #e6eef0;font-size:15px}
-    .footer{padding:14px;text-align:center;color:#93a6a9;font-size:13px}
-    .small{font-size:13px;color:var(--muted)}
-    .row{display:flex;gap:12px;align-items:center}
-    .hidden{display:none}
-    @media (max-width:600px){.wrap{margin:18px 12px}}
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, -apple-system, Segoe UI, Helvetica, Arial, sans-serif;
+      background: linear-gradient(160deg, #d6f5f8 0%, #eaf8fa 40%, #f3fcfd 100%);
+      min-height: 100vh;
+      color: #0c2426;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wrap {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 40px 20px 60px;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--card);
+      border-radius: 20px;
+      box-shadow: 0 16px 48px rgba(0, 168, 182, 0.13), 0 2px 8px rgba(0,0,0,0.04);
+      overflow: hidden;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(135deg, #00A8B6 0%, #0193a0 50%, #183965 100%);
+      padding: 32px 28px 40px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      width: 220px; height: 220px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.07);
+      top: -80px; right: -70px;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      width: 150px; height: 150px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.05);
+      bottom: -40px; left: -50px;
+    }
+    .hero-icon {
+      width: 72px; height: 72px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 34px;
+      margin-bottom: 14px;
+      position: relative;
+      z-index: 1;
+      backdrop-filter: blur(4px);
+    }
+    .hero h1 {
+      margin: 0 0 6px;
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+      position: relative;
+      z-index: 1;
+    }
+    .hero p {
+      margin: 0;
+      font-size: 13px;
+      color: rgba(255,255,255,0.78);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Wave */
+    .wave { display: block; margin-top: -1px; }
+    .wave svg { display: block; }
+
+    /* ── Body ── */
+    .body { padding: 28px 28px 24px; }
+
+    /* ── Alerts ── */
+    .alert {
+      display: none;
+      padding: 14px 16px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+    .alert.show { display: flex; align-items: flex-start; gap: 10px; }
+    .alert-icon { font-size: 16px; margin-top: 1px; flex-shrink: 0; }
+    .alert-error  { background: var(--danger-bg);  border: 1px solid var(--danger-border);  color: var(--danger); }
+    .alert-success{ background: var(--success-bg); border: 1px solid var(--success-border); color: var(--success); }
+    .alert-info   { background: var(--info-bg);    border: 1px solid var(--info-border);    color: #176a74; }
+
+    /* ── Form section ── */
+    .section { display: none; }
+    .section.show { display: block; }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #0c2426;
+      margin: 0 0 6px;
+    }
+    .section-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin: 0 0 22px;
+      line-height: 1.55;
+    }
+
+    /* ── Input group ── */
+    .field { margin-bottom: 16px; }
+    .field label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #2a4a4e;
+      margin-bottom: 7px;
+    }
+    .input-wrap {
+      position: relative;
+    }
+    .input-wrap input {
+      width: 100%;
+      padding: 13px 46px 13px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-size: 15px;
+      font-family: inherit;
+      color: #0c2426;
+      background: #f8fdfd;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+    .input-wrap input:focus {
+      border-color: var(--brand);
+      box-shadow: 0 0 0 3px rgba(0,168,182,0.12);
+      background: #fff;
+    }
+    .toggle-pw {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 18px;
+      color: var(--muted);
+      padding: 0;
+      line-height: 1;
+    }
+
+    /* Password strength bar */
+    .strength-bar {
+      height: 4px;
+      border-radius: 2px;
+      background: #e6eef0;
+      margin-top: 8px;
+      overflow: hidden;
+    }
+    .strength-fill {
+      height: 100%;
+      border-radius: 2px;
+      width: 0%;
+      transition: width 0.3s, background 0.3s;
+    }
+    .strength-label {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 13px 24px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+      transition: opacity 0.15s, transform 0.1s, box-shadow 0.15s;
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .btn-brand {
+      background: linear-gradient(135deg, #183965, #1e4a80);
+      color: #fff;
+      box-shadow: 0 4px 16px rgba(24,57,101,0.28);
+      width: 100%;
+      margin-top: 6px;
+    }
+    .btn-brand:hover:not(:disabled) { box-shadow: 0 6px 22px rgba(24,57,101,0.38); }
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      border: 1.5px solid var(--border);
+      width: 100%;
+      margin-top: 10px;
+    }
+    .btn-ghost:hover { background: #f5fafa; }
+
+    /* ── No token / success states ── */
+    .big-icon {
+      font-size: 48px;
+      text-align: center;
+      margin-bottom: 14px;
+    }
+    .text-center { text-align: center; }
+
+    /* ── Footer ── */
+    .footer {
+      background: #f7fdfd;
+      border-top: 1px solid #e8f5f6;
+      padding: 16px 28px;
+      text-align: center;
+      font-size: 12px;
+      color: #8aadb0;
+    }
+    .footer strong { color: var(--brand); }
+
+    /* ── Spinner ── */
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner {
+      display: inline-block;
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    @media (max-width: 520px) {
+      .wrap { padding: 20px 12px 48px; }
+      .body { padding: 22px 20px 20px; }
+      .hero { padding: 26px 20px 34px; }
+    }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="card" role="main" aria-labelledby="pageTitle">
-      <div class="hero">
-        <div style="width:56px;height:56px;border-radius:10px;background:rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;font-weight:700;">
-          CB
-        </div>
-        <div>
-          <h1 id="pageTitle">CampusBus — Password reset</h1>
-          <div class="small">Securely reset your password</div>
-        </div>
+<div class="wrap">
+  <div class="card">
+
+    <!-- HERO -->
+    <div class="hero">
+      <div class="hero-icon">🔑</div>
+      <h1>Reset Password</h1>
+      <p>CampusBus — Secure account recovery</p>
+    </div>
+
+    <!-- Wave -->
+    <div class="wave">
+      <svg viewBox="0 0 480 28" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" width="100%" height="28">
+        <path d="M0,0 C120,28 360,28 480,0 L480,28 L0,28 Z" fill="#ffffff"/>
+      </svg>
+    </div>
+
+    <div class="body">
+
+      <!-- ALERTS -->
+      <div id="alertError" class="alert alert-error" role="alert">
+        <span class="alert-icon">⚠️</span>
+        <span id="alertErrorText"></span>
+      </div>
+      <div id="alertSuccess" class="alert alert-success" role="status">
+        <span class="alert-icon">✅</span>
+        <span id="alertSuccessText"></span>
+      </div>
+      <div id="alertInfo" class="alert alert-info">
+        <span class="alert-icon">🔒</span>
+        <span id="alertInfoText"></span>
       </div>
 
-      <div class="body">
-        <p class="lead">This page completes the password reset flow. If you followed a reset link in your email, we’ll detect the secure token and let you set a new password here.</p>
+      <!-- ── SECTION: Password form ── -->
+      <div id="sectionForm" class="section">
+        <div class="section-title">Set a new password</div>
+        <p class="section-sub">Choose a strong password (at least 6 characters). It will be updated on your account immediately.</p>
 
-        <!-- ALERTS -->
-        <div id="alertError" class="error hidden" role="alert"></div>
-        <div id="alertInfo" class="info hidden"></div>
-        <div id="alertSuccess" class="success hidden" role="status"></div>
-
-        <!-- password form (hidden until token present) -->
-        <div id="pwForm" class="hidden" aria-live="polite">
-          <div class="big">Set your new password</div>
-          <p class="small">Choose a strong password (min 6 characters). This will immediately update your account.</p>
-
-          <label for="pw">New password</label>
-          <input id="pw" type="password" placeholder="New password" autocomplete="new-password" aria-label="New password">
-
-          <label for="pw2">Confirm password</label>
-          <input id="pw2" type="password" placeholder="Confirm password" autocomplete="new-password" aria-label="Confirm password">
-
-          <div style="height:12px"></div>
-          <div class="row" style="gap:10px">
-            <button id="btnReset" class="btn btn-brand">Set password</button>
-            <button id="btnCancel" class="btn btn-ghost">Back to login</button>
+        <div class="field">
+          <label for="pw">New Password</label>
+          <div class="input-wrap">
+            <input id="pw" type="password" placeholder="Enter new password" autocomplete="new-password" />
+            <button class="toggle-pw" type="button" onclick="togglePw('pw','eye1')" aria-label="Show/hide password">
+              <span id="eye1">👁</span>
+            </button>
           </div>
-
-          <div id="pwNote" class="small" style="margin-top:12px;color:var(--muted)"></div>
+          <div class="strength-bar"><div id="strengthFill" class="strength-fill"></div></div>
+          <div id="strengthLabel" class="strength-label"></div>
         </div>
 
-        <!-- fallback when no token: show helpful instructions -->
-        <div id="noToken" class="hidden" aria-live="polite">
-          <div class="big">No valid reset token found</div>
-          <p class="small">If you clicked an expired link, request a new password reset in the app or via the password recovery page.</p>
-          <div style="height:12px"></div>
-          <div class="row">
-            <button id="openApp" class="btn btn-dark">Open App / Login</button>
-            <a id="openForgot" class="btn btn-ghost" href="https://rishabh369u.github.io/CampusBus_Resetpass/">Open Reset Page</a>
+        <div class="field">
+          <label for="pw2">Confirm Password</label>
+          <div class="input-wrap">
+            <input id="pw2" type="password" placeholder="Confirm new password" autocomplete="new-password" />
+            <button class="toggle-pw" type="button" onclick="togglePw('pw2','eye2')" aria-label="Show/hide password">
+              <span id="eye2">👁</span>
+            </button>
           </div>
         </div>
 
+        <button id="btnReset" class="btn btn-brand" onclick="doReset()">
+          🔒&nbsp; Update Password
+        </button>
       </div>
-      <div class="footer">© <span id="year"></span> CampusBus — Keep travel predictable, reliable and stress-free.</div>
+
+      <!-- ── SECTION: Success ── -->
+      <div id="sectionSuccess" class="section text-center">
+        <div class="big-icon">🎉</div>
+        <div class="section-title">Password updated!</div>
+        <p class="section-sub">Your password has been changed successfully. You can now sign in to CampusBus with your new password.</p>
+        <button class="btn btn-brand" onclick="window.close(); window.location.href='/';">
+          ✓&nbsp; Done — Go to Login
+        </button>
+      </div>
+
+      <!-- ── SECTION: No / expired token ── -->
+      <div id="sectionNoToken" class="section text-center">
+        <div class="big-icon">🔗</div>
+        <div class="section-title">Link expired or invalid</div>
+        <p class="section-sub">
+          This reset link has expired or already been used. Reset links are valid for <strong>1 hour</strong> and can only be used once.<br/><br/>
+          Please request a new reset link from the CampusBus app.
+        </p>
+        <button class="btn btn-ghost" onclick="window.location.reload()">Try Again</button>
+      </div>
+
+    </div><!-- /.body -->
+
+    <div class="footer">
+      <strong>CampusBus</strong> &nbsp;·&nbsp;
+      © <span id="year"></span> &nbsp;·&nbsp; Secure &amp; Encrypted
     </div>
   </div>
+</div>
 
 <script>
-/*
-  FULL, ROBUST reset page script
-  - Handles:
-    * redirect param in URL (redirect=<confirmation_url>) -> follows it
-    * redirect_to param -> follows
-    * fragment contains access_token (#access_token=...)
-    * query contains access_token (?access_token=...)
-  - Performs password update by calling PUT /auth/v1/user with Authorization: Bearer <access_token>
-  - IMPORTANT: Replace SUPABASE_ANON_KEY value below with your real anon key before publishing
-*/
+  /* ─────────────────────────────────────────────
+     CONFIG
+  ───────────────────────────────────────────── */
+  const SUPABASE_URL     = "https://zholdpdpceyaltagfnlr.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpob2xkcGRwY2V5YWx0YWdmbmxyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMxODcwNjIsImV4cCI6MjA2ODc2MzA2Mn0.TlCz8_KqKn0MA_tTekfswPFz8NPB30YhFgTw7kdnCDA";
 
-const SUPABASE_URL = "https://zholdpdpceyaltagfnlr.supabase.co";
-// Replace the placeholder with your project's anon key before deploying.
-// If you prefer not to store it in the repo, set it manually in the hosted file during deploy.
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpob2xkcGRwY2V5YWx0YWdmbmxyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMxODcwNjIsImV4cCI6MjA2ODc2MzA2Mn0.TlCz8_KqKn0MA_tTekfswPFz8NPB30YhFgTw7kdnCDA";
+  document.getElementById('year').textContent = new Date().getFullYear();
 
-document.getElementById('year').textContent = new Date().getFullYear();
-
-function show(id){ document.getElementById(id).classList.remove('hidden'); }
-function hide(id){ document.getElementById(id).classList.add('hidden'); }
-function setText(id, txt){ const e=document.getElementById(id); if(e){ e.textContent = txt; e.classList.remove('hidden'); } }
-
-function parseParams(raw) {
-  if (!raw) return {};
-  raw = raw.replace(/^[#?]/, '');
-  const out = {};
-  raw.split('&').forEach(pair => {
-    if (!pair) return;
-    const [k, v=''] = pair.split('=');
-    try { out[decodeURIComponent(k)] = decodeURIComponent(v); } catch(e) { out[k]=v; }
-  });
-  return out;
-}
-
-// 1) If URL contains redirect or redirect_to query param, follow it (this often contains the confirmation URL)
-const u = new URL(window.location.href);
-const redirectParam = u.searchParams.get('redirect') || u.searchParams.get('redirect_to') || u.searchParams.get('confirmation_url');
-if (redirectParam) {
-  const target = decodeURIComponent(redirectParam);
-  // If target seems to be a confirmation URL, navigate to it so the browser receives the fragment from Supabase
-  window.location.href = target;
-} else {
-  // 2) parse both fragment and query
-  const fragParams = parseParams(window.location.hash);
-  const queryParams = parseParams(window.location.search);
-  const params = Object.assign({}, queryParams, fragParams);
-
-  const alertError = document.getElementById('alertError');
-  const alertInfo = document.getElementById('alertInfo');
-  const alertSuccess = document.getElementById('alertSuccess');
-  const pwForm = document.getElementById('pwForm');
-  const noToken = document.getElementById('noToken');
-  const btnReset = document.getElementById('btnReset');
-  const btnCancel = document.getElementById('btnCancel');
-  const openApp = document.getElementById('openApp');
-
-  function showError(msg){
-    alertError.textContent = msg;
-    show('alertError');
-    hide('alertSuccess');
-    hide('alertInfo');
-  }
-  function showInfo(msg){
-    alertInfo.textContent = msg;
-    show('alertInfo');
-    hide('alertError');
-    hide('alertSuccess');
-  }
-  function showSuccess(msg){
-    alertSuccess.textContent = msg;
-    show('alertSuccess');
-    hide('alertError');
-    hide('alertInfo');
-  }
-
-  // handle button behaviors
-  btnCancel && btnCancel.addEventListener('click', ()=>{ window.location.href = "/"; });
-  openApp && openApp.addEventListener('click', ()=>{
-    // attempt deep link to app
-    const deep = "myapp://auth/callback";
-    // try open app
-    window.location.href = deep;
-    // fallback to web login after short delay
-    setTimeout(()=>{ window.location.href = "/"; }, 800);
-  });
-
-  // errors from Supabase verify (otp_expired etc.)
-  if (params.error || params.error_code || params.error_description) {
-    const code = params.error_code || params.error || '';
-    const desc = params.error_description || '';
-    showError('Reset link issue: ' + code + (desc ? ' — ' + desc : ''));
-    show('noToken');
-    return;
-  }
-
-  // if token present in fragment or query
-  if (params.access_token) {
-    show('pwForm');
-    showInfo('Secure session detected. Enter a new password to update your account.');
-
-    btnReset.addEventListener('click', async () => {
-      hide('alertError');
-      hide('alertSuccess');
-      hide('alertInfo');
-      const pw = (document.getElementById('pw')||{}).value || '';
-      const pw2 = (document.getElementById('pw2')||{}).value || '';
-
-      if (!pw || pw.length < 6) { showError('Password must be at least 6 characters'); return; }
-      if (pw !== pw2) { showError('Passwords do not match'); return; }
-
-      btnReset.disabled = true;
-      btnReset.textContent = 'Updating...';
-      setText('pwNote', 'Updating password securely — please wait.');
-
-      try {
-        // Validate anon key presence
-        if (!SUPABASE_ANON_KEY || SUPABASE_ANON_KEY.includes('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inpob2xkcGRwY2V5YWx0YWdmbmxyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMxODcwNjIsImV4cCI6MjA2ODc2MzA2Mn0.TlCz8_KqKn0MA_tTekfswPFz8NPB30YhFgTw7kdnCDA')) {
-          showError('Server configuration missing: SUPABASE_ANON_KEY not set. Replace the placeholder in this file before deploying.');
-          btnReset.disabled = false;
-          btnReset.textContent = 'Set password';
-          setText('pwNote','');
-          return;
-        }
-
-        const resp = await fetch(SUPABASE_URL + '/auth/v1/user', {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + params.access_token,
-            'apikey': SUPABASE_ANON_KEY
-          },
-          body: JSON.stringify({ password: pw })
-        });
-
-        const text = await resp.text();
-        if (resp.ok) {
-          showSuccess('Password updated successfully. You can now sign in with your new password.');
-          // clear fragment to avoid reuse
-          history.replaceState({}, document.title, window.location.pathname);
-          setText('pwNote','');
-        } else {
-          let message = 'Failed to update password.';
-          try {
-            const j = JSON.parse(text || '{}');
-            message = j.error || j.message || message;
-          } catch(e) {
-            if (text) message = text;
-          }
-          showError(message);
-          setText('pwNote','');
-        }
-      } catch (err) {
-        showError('Network error: ' + err.message);
-        setText('pwNote','');
-      } finally {
-        btnReset.disabled = false;
-        btnReset.textContent = 'Set password';
-      }
+  /* ─────────────────────────────────────────────
+     HELPERS
+  ───────────────────────────────────────────── */
+  function showAlert(type, msg) {
+    // hide all first
+    ['Error','Success','Info'].forEach(t => {
+      document.getElementById('alert'+t).classList.remove('show');
     });
-
-    return;
+    if (!type || !msg) return;
+    const cap = type.charAt(0).toUpperCase() + type.slice(1);
+    document.getElementById('alert'+cap+'Text').textContent = msg;
+    document.getElementById('alert'+cap).classList.add('show');
   }
 
-  // no token found
-  show('noToken');
-  showInfo('If you were sent here from an email, the link might have expired. Request a new reset link from the app.');
-}
+  function showSection(id) {
+    ['sectionForm','sectionSuccess','sectionNoToken'].forEach(s => {
+      document.getElementById(s).classList.remove('show');
+    });
+    document.getElementById(id).classList.add('show');
+  }
+
+  function parseFragment(raw) {
+    const out = {};
+    if (!raw) return out;
+    raw.replace(/^[#?]/, '').split('&').forEach(pair => {
+      if (!pair) return;
+      const idx = pair.indexOf('=');
+      const k = idx >= 0 ? pair.slice(0, idx) : pair;
+      const v = idx >= 0 ? pair.slice(idx + 1) : '';
+      try { out[decodeURIComponent(k)] = decodeURIComponent(v.replace(/\+/g, ' ')); }
+      catch(e) { out[k] = v; }
+    });
+    return out;
+  }
+
+  function togglePw(inputId, eyeId) {
+    const input = document.getElementById(inputId);
+    const eye   = document.getElementById(eyeId);
+    if (input.type === 'password') {
+      input.type = 'text';
+      eye.textContent = '🙈';
+    } else {
+      input.type = 'password';
+      eye.textContent = '👁';
+    }
+  }
+
+  // Password strength indicator
+  document.getElementById('pw').addEventListener('input', function() {
+    const val = this.value;
+    const fill = document.getElementById('strengthFill');
+    const label = document.getElementById('strengthLabel');
+    let strength = 0;
+    if (val.length >= 6) strength++;
+    if (val.length >= 10) strength++;
+    if (/[A-Z]/.test(val)) strength++;
+    if (/[0-9]/.test(val)) strength++;
+    if (/[^A-Za-z0-9]/.test(val)) strength++;
+
+    const colors = ['', '#e74c3c', '#e67e22', '#f1c40f', '#2ecc71', '#17a34a'];
+    const labels = ['', 'Weak', 'Fair', 'Moderate', 'Strong', 'Very strong'];
+    fill.style.width = (strength * 20) + '%';
+    fill.style.background = colors[strength] || '';
+    label.textContent = val.length ? labels[strength] || '' : '';
+    label.style.color = colors[strength] || '';
+  });
+
+  /* ─────────────────────────────────────────────
+     TOKEN EXTRACTION
+     Supabase appends: #access_token=...&type=recovery
+     after the redirect. We look in fragment first,
+     then query string as fallback.
+  ───────────────────────────────────────────── */
+  let accessToken = null;
+
+  const fragParams  = parseFragment(window.location.hash);
+  const queryParams = parseFragment(window.location.search);
+  const allParams   = Object.assign({}, queryParams, fragParams); // fragment wins
+
+  // Check for Supabase error in URL params
+  if (allParams.error || allParams.error_code) {
+    const code = allParams.error_code || allParams.error || 'unknown';
+    const desc = allParams.error_description || '';
+
+    // otp_expired = most common — link already used or expired
+    if (code === 'otp_expired' || code.includes('expired')) {
+      showSection('sectionNoToken');
+    } else {
+      showAlert('error', 'Reset link error: ' + code + (desc ? ' — ' + desc : ''));
+      showSection('sectionNoToken');
+    }
+  }
+  // access_token present in fragment (standard Supabase recovery flow)
+  else if (allParams.access_token && allParams.type === 'recovery') {
+    accessToken = allParams.access_token;
+    // Clear the token from URL bar immediately (security + prevents reuse confusion)
+    history.replaceState({}, document.title, window.location.pathname);
+    showSection('sectionForm');
+    showAlert('info', 'Secure session verified. Please enter your new password below.');
+  }
+  // access_token present but type is not recovery (safety fallback)
+  else if (allParams.access_token) {
+    accessToken = allParams.access_token;
+    history.replaceState({}, document.title, window.location.pathname);
+    showSection('sectionForm');
+    showAlert('info', 'Session detected. Enter your new password to continue.');
+  }
+  // No token at all — show expired/invalid state
+  else {
+    showSection('sectionNoToken');
+  }
+
+  /* ─────────────────────────────────────────────
+     RESET ACTION
+  ───────────────────────────────────────────── */
+  async function doReset() {
+    showAlert(null, null);
+
+    const pw  = document.getElementById('pw').value  || '';
+    const pw2 = document.getElementById('pw2').value || '';
+    const btn = document.getElementById('btnReset');
+
+    if (!pw || pw.length < 6) {
+      showAlert('error', 'Password must be at least 6 characters.');
+      document.getElementById('pw').focus();
+      return;
+    }
+    if (pw !== pw2) {
+      showAlert('error', 'Passwords do not match. Please re-enter.');
+      document.getElementById('pw2').focus();
+      return;
+    }
+    if (!accessToken) {
+      showAlert('error', 'Session expired. Please request a new reset link from the app.');
+      return;
+    }
+
+    // Show loading state
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>&nbsp; Updating...';
+
+    try {
+      const resp = await fetch(SUPABASE_URL + '/auth/v1/user', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + accessToken,
+          'apikey': SUPABASE_ANON_KEY
+        },
+        body: JSON.stringify({ password: pw })
+      });
+
+      if (resp.ok) {
+        // Invalidate token reference in memory — one-time use
+        accessToken = null;
+        showSection('sectionSuccess');
+      } else {
+        let message = 'Failed to update password. Please try again.';
+        try {
+          const j = await resp.json();
+          message = j.error_description || j.msg || j.message || j.error || message;
+        } catch(e) { /* ignore parse error */ }
+
+        // Token expired during the session
+        if (resp.status === 401 || message.toLowerCase().includes('expired')) {
+          message = 'Your session expired. Please request a new reset link from the app.';
+          showSection('sectionNoToken');
+        }
+
+        showAlert('error', message);
+      }
+    } catch (err) {
+      showAlert('error', 'Network error — please check your connection and try again.');
+      console.error('doReset error:', err);
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '🔒&nbsp; Update Password';
+    }
+  }
+
+  // Allow Enter key to submit
+  ['pw','pw2'].forEach(id => {
+    document.getElementById(id).addEventListener('keydown', e => {
+      if (e.key === 'Enter') doReset();
+    });
+  });
 </script>
 </body>
 </html>
